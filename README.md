@@ -4,19 +4,19 @@ Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被�
 ### 功能概述
 目前该工具具备7个功能，后期如果有需要还会不断更新，7个功能分别为收集目标的：
 
-资产信息
+    资产信息
 
-CMS信息
+    CMS信息
 
-DNS信息
+    DNS信息
 
-备案信息
+    备案信息
 
-IP地址
+    IP地址
 
-子域名信息
+    子域名信息
 
-whois信息
+    whois信息
 
 ### 使用方法：
 1. 安装所需要的模块：requests,BeautifulSoup4，也可以使用`pip install -r requirements.txt`进行安装
