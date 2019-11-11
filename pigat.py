@@ -33,10 +33,14 @@ def Whois2_chinaz(simple_url):#利用站长之家进行Whois查询
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36'}
         requests_chinaz = requests.get('https://whois.chinaz.com/{}'.format(simple_url),headers=headers)
         bs4_requests_chinaz = BeautifulSoup(requests_chinaz.text,'html.parser')
-        bs4_Whois_info_chinaz = bs4_requests_chinaz.select('#sh_info')[0].select('.bor-b1s')
-        for i in bs4_Whois_info_chinaz:
-            if '域名' not in i.text and '站长之家' not in i.text:
-                print('[+]    ',i.text.replace('[whois反查]',''))
+        check_chinaz = bs4_requests_chinaz.select('.fz18')[0].text
+        if check_chinaz == '该域名被屏蔽':
+            print('[-] 该域名已被站长之家屏蔽')
+        else:
+            bs4_Whois_info_chinaz = bs4_requests_chinaz.select('#sh_info')[0].select('.bor-b1s')
+            for i in bs4_Whois_info_chinaz:
+                if '域名' not in i.text and '站长之家' not in i.text:
+                    print('[+]    ', i.text.replace('[whois反查]', ''))
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')   
         sys.exit()
@@ -154,7 +158,7 @@ def ip1_dnsdumpster(simple_url):
         print('\n[!] 正在使用dnsdumpster进行IP地址查询 ……')
         print('[!] 注意：如果目标使用了CDN，那么查询到的IP不可信')
         for j in range(3):
-            print('[+]     ',H2_1_dnsdumpster[j].text.split())
+            print('[+]',H2_1_dnsdumpster[j].text.split())
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')       
         sys.exit()
@@ -169,7 +173,7 @@ def ip2_aizhan(simple_url):
         requests_aizhan = requests.get('https://dns.aizhan.com/{}/'.format(simple_url),headers = headers)
         bs_aizhan = BeautifulSoup(requests_aizhan.text,'html.parser')
         for i in range(3):
-            print('[+] ',bs_aizhan.select('p')[i+1].text,':',bs_aizhan.select('strong')[i].text)
+            print('[+]',bs_aizhan.select('p')[i+1].text,':',bs_aizhan.select('strong')[i].text)
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')       
         sys.exit()
@@ -367,5 +371,5 @@ if __name__ == '__main__':
         elif opt in ('--whois'): # 搜索whois信息
             t_whois1.start()
             t_whois2.start()
-            t_whois1.join()  
-            t_whois2.join()         
+            t_whois1.join()
+            t_whois2.join()
