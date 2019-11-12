@@ -6,7 +6,8 @@ Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被�
 ### 使用方法：
 1. 安装所需要的模块：requests,BeautifulSoup4，也可以使用`pip install -r requirements.txt`进行安装
 1. `-h`查看帮助,`-u`指定url，其他更多操作都在下面示例帮助里
-
+### 下载地址：
+[点击下载](https://github.com/teamssix/pigat/releases)
 ### 示例：
 1.查看帮助信息
 
