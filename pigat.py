@@ -103,7 +103,7 @@ def CMS1_yunsee(complete_url):#CMS1_云悉
                     for j in print_yunsee['fingers'][i]:
                         print('[+]    ',j)
         else:
-            print('[-] 来自云悉的提示:',response_yunsee_text['mess'])
+            print('[-] 来自云悉的提示:',response_yunsee_text['mess'],'请过会儿后重试')
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')    
         sys.exit()
@@ -172,8 +172,10 @@ def ip2_aizhan(simple_url):
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'}
         requests_aizhan = requests.get('https://dns.aizhan.com/{}/'.format(simple_url),headers = headers)
         bs_aizhan = BeautifulSoup(requests_aizhan.text,'html.parser')
+        global ip_bs_aizhan
+        ip_bs_aizhan = bs_aizhan.select('strong')
         for i in range(3):
-            print('[+]',bs_aizhan.select('p')[i+1].text,':',bs_aizhan.select('strong')[i].text)
+            print('[+]',bs_aizhan.select('p')[i+1].text,':',ip_bs_aizhan[i].text)
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')       
         sys.exit()
@@ -234,40 +236,78 @@ def SubDomain():
         print('\n[!] 正在使用dnsdumpster进行子域名查询 ……')
         dnsdumpster(simple_url)
         for j in range(3,len(H2_1_dnsdumpster)):
-            print('[+]     ',H2_1_dnsdumpster[j].text.split())
+            print('[+]',H2_1_dnsdumpster[j].text.split())
     except Exception as e:
         print ('[-] 发生异常:',e,'程序正在退出……')     
         sys.exit()
     lock.release()
-  
+
+def port(ip,port):
+    lock.acquire()
+    try:
+        url = 'http://tool.cc/port/check_port_status.php?remoteip={}&port={}'.format(ip,port)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'}
+        requests_port =  requests.get(url,headers = headers)
+        if '打开' in requests_port.text:
+            bs_port = BeautifulSoup(requests_port.text,'html.parser')
+            print('[+] ',port,' ',bs_port.text)
+    except Exception as e:
+        print ('[-] 发生异常:',e,'程序正在退出……')
+        sys.exit()
+    lock.release()
+
+def port_main():
+    try:
+        print('\n[!] 正在使用tool.cc进行端口查询 ……')
+        if H2_1_dnsdumpster[1].text == ip_bs_aizhan[1].text:
+            ip = ip_bs_aizhan[1].text
+            print('[!] 正在对{}进行常用端口查询 ……'.format(ip))
+            port_list = [21,22,23,25,53,80,110,135,137,138,139,143,443,445,1433,1863,2289,3306,3389,5631,5632,5000,8080,9090]
+            thread_port = []
+            for i in port_list:
+                t_port = threading.Thread(target = port,args = (ip,i,),name = 'port{}'.format(i))
+                thread_port.append(t_port)
+            for i in thread_port:
+                i.start()
+            for i in thread_port:
+                i.join()
+        else:
+            print('[-] 发现两次IP查询的结果不一致，停止被动端口扫描……')
+    except Exception as e:
+        print ('[-] 发生异常:',e,'程序正在退出……')
+        sys.exit()
 
 def deal_url(url):
-    global simple_url,complete_url,t_whois1, t_whois2, t_beian, t_cms1, t_cms2, t_ip1, t_ip2, t_DNSinfo, t_SubDomain, t_zhichan, threading_list
-    if 'www' in url: # 将url格式处理成简单的url
-        simple_url = '.'
-        simple_url = simple_url.join(url.split('.')[1:]) 
-    elif '/' in url:
-        simple_url = url.split('/')[2]
-    else:
-        simple_url = url
+    try:
+        global simple_url,complete_url,t_whois1, t_whois2, t_beian, t_cms1, t_cms2, t_ip1, t_ip2, t_DNSinfo, t_SubDomain, t_zhichan, threading_list
+        if 'www' in url: # 将url格式处理成简单的url
+            simple_url = '.'
+            simple_url = simple_url.join(url.split('.')[1:])
+        elif '/' in url:
+            simple_url = url.split('/')[2]
+        else:
+            simple_url = url
 
-    if '/' not in url: # 将url格式处理成完整的url
-        complete_url = 'http://' + url
-    else:
-        complete_url = url
+        if '/' not in url: # 将url格式处理成完整的url
+            complete_url = 'http://' + url
+        else:
+            complete_url = url
 
-    t_whois1 = threading.Thread(target = Whois1_internic,args = (simple_url,),name = 'whois1')#Whois1_internic
-    t_whois2 = threading.Thread(target = Whois2_chinaz,args = (simple_url,),name = 'whois2')#Whois2_站长之家
-    t_beian = threading.Thread(target = beian,args = (url,),name = 'beian')#站长之家备案信息查询
-    t_cms1 = threading.Thread(target = CMS1_yunsee,args = (complete_url,),name = 'cms1')#CMS1_云悉
-    t_cms2 = threading.Thread(target = CMS2_bugscaner,args = (complete_url,),name = 'cms2')#CMS2_bugscaner
-    t_ip1 = threading.Thread(target = ip1_dnsdumpster,args = (simple_url,),name = 'ip1')#ip1_dnsdumpsterc
-    t_ip2 = threading.Thread(target = ip2_aizhan,args = (simple_url,),name = 'ip2')#ip1_爱站网
-    t_DNSinfo = threading.Thread(target = DNSinfo,name = 'DNSinfo')#DNS信息
-    t_SubDomain = threading.Thread(target = SubDomain,name = 'SubDomain')#子域名
-    t_zhichan = threading.Thread(target = tianyancha,args = (url,),name = 'tianyancha')#天眼查
+        t_whois1 = threading.Thread(target = Whois1_internic,args = (simple_url,),name = 'whois1')#Whois1_internic
+        t_whois2 = threading.Thread(target = Whois2_chinaz,args = (simple_url,),name = 'whois2')#Whois2_站长之家
+        t_beian = threading.Thread(target = beian,args = (url,),name = 'beian')#站长之家备案信息查询
+        t_cms1 = threading.Thread(target = CMS1_yunsee,args = (complete_url,),name = 'cms1')#CMS1_云悉
+        t_cms2 = threading.Thread(target = CMS2_bugscaner,args = (complete_url,),name = 'cms2')#CMS2_bugscaner
+        t_ip1 = threading.Thread(target = ip1_dnsdumpster,args = (simple_url,),name = 'ip1')#ip1_dnsdumpsterc
+        t_ip2 = threading.Thread(target = ip2_aizhan,args = (simple_url,),name = 'ip2')#ip1_爱站网
+        t_DNSinfo = threading.Thread(target = DNSinfo,name = 'DNSinfo')#DNS信息
+        t_SubDomain = threading.Thread(target = SubDomain,name = 'SubDomain')#子域名
+        t_zhichan = threading.Thread(target = tianyancha,args = (url,),name = 'tianyancha')#天眼查
 
-    threading_list = [t_whois1,t_whois2,t_beian,t_cms1,t_cms2,t_ip1,t_ip2,t_DNSinfo,t_SubDomain,t_zhichan]
+        threading_list = [t_whois1,t_whois2,t_beian,t_zhichan,t_cms1,t_cms2,t_DNSinfo,t_SubDomain,t_ip1,t_ip2]
+    except Exception as e:
+        print ('[-] 发生异常:',e,'程序正在退出……')
+        sys.exit()
   
                
 if __name__ == '__main__':
@@ -294,7 +334,7 @@ if __name__ == '__main__':
         if argv == []:
             print('\n[-] 请参考上面的示例格式输入正确内容，或者查看帮助\n')
             sys.exit()
-        opts,args = getopt.getopt(argv,'hu:',['help','url=','whois','filing','cms','ip','dns','subdomain','assert'])
+        opts,args = getopt.getopt(argv,'hu:',['help','url=','whois','filing','cms','ip','dns','subdomain','assert','port'])
         
     except getopt.GetoptError:
         print('''
@@ -306,7 +346,8 @@ if __name__ == '__main__':
         --dns : 搜集目标DNS信息
         --filing : 搜集目标备案信息
         -h | --help ：查看帮助信息
-        --ip : 搜集目标IP信息   
+        --ip : 搜集目标IP信息
+        --port : 如果两次查询IP结果一致，则扫描该IP端口
         --subdomain : 搜集目标子域名信息
         -u | --url : 指定目标URL，默认收集所有信息
         --whois : 搜集目标Whois信息
@@ -327,7 +368,8 @@ if __name__ == '__main__':
     --dns : 搜集目标DNS信息
     --filing : 搜集目标备案信息
     -h | --help ：查看帮助信息
-    --ip : 搜集目标IP信息   
+    --ip : 搜集目标IP信息
+    --port : 如果两次查询IP结果一致，则扫描该IP端口
     --subdomain : 搜集目标子域名信息
     -u | --url : 指定目标URL，默认收集所有信息
     --whois : 搜集目标Whois信息
@@ -346,6 +388,7 @@ if __name__ == '__main__':
                     i.start()
                 for i in threading_list:
                     i.join()
+                port_main()
         elif opt in ('--assert'): # 搜索资产信息
             t_zhichan.start()
             t_zhichan.join()
@@ -372,4 +415,12 @@ if __name__ == '__main__':
             t_whois1.start()
             t_whois2.start()
             t_whois1.join()
-            t_whois2.join()
+        elif opt in ('--port'): # 搜索IP端口信息
+            if 'H1_dnsdumpster' in locals().keys(): #判断H1_dnsdumpster变量有没有被定义，也就是说判断查询IP的两个函数有没有被执行
+                port_main()
+            else: # 如果查询IP的两个函数没有被执行就先执行查询IP的函数再查询端口
+                t_ip1.start()
+                t_ip2.start()
+                t_ip1.join()
+                t_ip2.join()
+                port_main()
