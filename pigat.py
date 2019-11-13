@@ -1,3 +1,4 @@
+import re
 import sys
 import zlib
 import json
@@ -17,12 +18,15 @@ def Whois1_internic(simple_url):#利用internic进行Whois查询
         }
         requests_internic = requests.get('https://reports.internic.net/cgi/whois?whois_nic={}&type=domain'.format(simple_url),headers=headers)
         bs4_requests_internic = BeautifulSoup(requests_internic.text,'html.parser')
-        for i in bs4_requests_internic.select('pre')[0].text.split('>>>')[0].split('\n'):
-            if i not in '':
-                print('[+]    ',i.split('   ')[1])
+        result_internic = bs4_requests_internic.select('pre')[0].text.split('>>>')[0].split('\n')
+        if 'No match for domain' in result_internic[1]:
+            print('[-]', result_internic[1])
+        else:
+            for i in result_internic:
+                if i not in '':
+                    print('[+]    ', i.split('   ')[1])
     except Exception as e:
-        print('[-] 发生异常:',e,'程序正在退出……')
-        sys.exit()
+        print('[-] 发生异常:',e)
     lock.release()
     
     
@@ -42,8 +46,7 @@ def Whois2_chinaz(simple_url):#利用站长之家进行Whois查询
                 if '域名' not in i.text and '站长之家' not in i.text:
                     print('[+]    ', i.text.replace('[whois反查]', ''))
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')   
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
        
         
@@ -71,8 +74,7 @@ def beian(url):
         print('[+]     ',H2_beian[8].text,H3_1_beian[5].text)
         print('[+]     ',H2_beian[9].text,H3_1_beian[6].text.split()[0])
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')    
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
     
     
@@ -105,8 +107,7 @@ def CMS1_yunsee(complete_url):#CMS1_云悉
         else:
             print('[-] 来自云悉的提示:',response_yunsee_text['mess'],'请过会儿后重试')
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')    
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 
@@ -126,8 +127,7 @@ def CMS2_bugscaner(complete_url):#CMS2_bugscaner
         for i in request_bugscaner.json():
             print('[+]    ',i,':',request_bugscaner.json()[i])
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')     
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 
@@ -148,20 +148,19 @@ def dnsdumpster(simple_url):
         H2_dnsdumpster = bs_requests_dnsdumpster.select('.table-responsive')
         H2_1_dnsdumpster = H2_dnsdumpster[3].select('td')
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')
-        sys.exit()
+        print ('[-] 发生异常:',e)
+        
 
 def ip1_dnsdumpster(simple_url):
     lock.acquire()
     try:
-        dnsdumpster(simple_url)
         print('\n[!] 正在使用dnsdumpster进行IP地址查询 ……')
         print('[!] 注意：如果目标使用了CDN，那么查询到的IP不可信')
+        dnsdumpster(simple_url)
         for j in range(3):
             print('[+]',H2_1_dnsdumpster[j].text.split())
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')       
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 def ip2_aizhan(simple_url):
@@ -177,8 +176,7 @@ def ip2_aizhan(simple_url):
         for i in range(3):
             print('[+]',bs_aizhan.select('p')[i+1].text,':',ip_bs_aizhan[i].text)
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')       
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
         
     
@@ -212,8 +210,7 @@ def tianyancha(url):
         else:
             print('[-] 未查询到该URL的企业信息')
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')       
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 def DNSinfo():
@@ -226,8 +223,7 @@ def DNSinfo():
             for j in H2_dnsdumpster[i].select('td'):
                 print('[+]     ',j.text.split())
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')       
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 def SubDomain():
@@ -238,8 +234,7 @@ def SubDomain():
         for j in range(3,len(H2_1_dnsdumpster)):
             print('[+]',H2_1_dnsdumpster[j].text.split())
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')     
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 def port(ip,port):
@@ -252,14 +247,13 @@ def port(ip,port):
             bs_port = BeautifulSoup(requests_port.text,'html.parser')
             print('[+] ',port,' ',bs_port.text)
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')
-        sys.exit()
+        print ('[-] 发生异常:',e)
     lock.release()
 
 def port_main():
     try:
         print('\n[!] 正在使用tool.cc进行端口查询 ……')
-        if H2_1_dnsdumpster[1].text == ip_bs_aizhan[1].text:
+        if re.findall(r'(?<=>).*?(?=<br)',str(H2_1_dnsdumpster[1]))[0] == ip_bs_aizhan[1].text: #使用正则匹配结果，避免误报
             ip = ip_bs_aizhan[1].text
             print('[!] 正在对{}进行常用端口查询 ……'.format(ip))
             port_list = [21,22,23,25,53,80,110,135,137,138,139,143,443,445,1433,1863,2289,3306,3389,5631,5632,5000,8080,9090]
@@ -274,8 +268,8 @@ def port_main():
         else:
             print('[-] 发现两次IP查询的结果不一致，停止被动端口扫描……')
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')
-        sys.exit()
+        print ('[-] 发生异常:',e)
+        
 
 def deal_url(url):
     try:
@@ -295,7 +289,7 @@ def deal_url(url):
 
         t_whois1 = threading.Thread(target = Whois1_internic,args = (simple_url,),name = 'whois1')#Whois1_internic
         t_whois2 = threading.Thread(target = Whois2_chinaz,args = (simple_url,),name = 'whois2')#Whois2_站长之家
-        t_beian = threading.Thread(target = beian,args = (url,),name = 'beian')#站长之家备案信息查询
+        t_beian = threading.Thread(target = beian,args = (url,),name = 'beian',daemon=True)#站长之家备案信息查询
         t_cms1 = threading.Thread(target = CMS1_yunsee,args = (complete_url,),name = 'cms1')#CMS1_云悉
         t_cms2 = threading.Thread(target = CMS2_bugscaner,args = (complete_url,),name = 'cms2')#CMS2_bugscaner
         t_ip1 = threading.Thread(target = ip1_dnsdumpster,args = (simple_url,),name = 'ip1')#ip1_dnsdumpsterc
@@ -305,9 +299,10 @@ def deal_url(url):
         t_zhichan = threading.Thread(target = tianyancha,args = (url,),name = 'tianyancha')#天眼查
 
         threading_list = [t_whois1,t_whois2,t_beian,t_zhichan,t_cms1,t_cms2,t_DNSinfo,t_SubDomain,t_ip1,t_ip2]
+        for i in threading_list:
+            i.setDaemon(True)
     except Exception as e:
-        print ('[-] 发生异常:',e,'程序正在退出……')
-        sys.exit()
+        print ('[-] 发生异常:',e)
   
                
 if __name__ == '__main__':
@@ -333,7 +328,7 @@ if __name__ == '__main__':
         argv = sys.argv[1:]
         if argv == []:
             print('\n[-] 请参考上面的示例格式输入正确内容，或者查看帮助\n')
-            sys.exit()
+            
         opts,args = getopt.getopt(argv,'hu:',['help','url=','whois','filing','cms','ip','dns','subdomain','assert','port'])
         
     except getopt.GetoptError:
@@ -357,11 +352,11 @@ if __name__ == '__main__':
         python pigat.py -u teamssix.com ：查看teamssix.com的所有信息
         python pigat.py -u teamssix.com --assert：查看teamssix.com的相关资产信息
         ''')
-        sys.exit(2)
-        
-    for opt,arg in opts:
-        if opt in ('-h','--help'):
-            print('''
+        sys.exit()
+    try:
+        for opt,arg in opts:
+            if opt in ('-h','--help'):
+                print('''
 帮助：
     --assert : 搜集目标资产信息
     --cms : 搜集目标CMS信息
@@ -373,54 +368,57 @@ if __name__ == '__main__':
     --subdomain : 搜集目标子域名信息
     -u | --url : 指定目标URL，默认收集所有信息
     --whois : 搜集目标Whois信息
-                
+                    
 示例：
     python pigat.py -h：查看帮助信息
     python pigat.py -u teamssix.com ：查看teamssix.com的所有信息
     python pigat.py -u teamssix.com --assert：查看teamssix.com的相关资产信息
-                ''')
-            sys.exit()
-        elif opt in ('-u','--url'): # 指定url
-            url = arg
-            deal_url(url)
-            if len(argv) == 2:#搜索所有信息
-                for i in threading_list:
-                    i.start()
-                for i in threading_list:
-                    i.join()
-                port_main()
-        elif opt in ('--assert'): # 搜索资产信息
-            t_zhichan.start()
-            t_zhichan.join()
-        elif opt in ('--cms'): # 搜索CMS信息
-            t_cms1.start()
-            t_cms2.start()
-            t_cms1.join()
-            t_cms2.join()
-        elif opt in ('--dns'): # 搜索DNS信息
-            t_DNSinfo.start()
-            t_DNSinfo.join()
-        elif opt in ('--filing'): # 搜索备案信息
-            t_beian.start()
-            t_beian.join()
-        elif opt in ('--ip'): # 搜索IP信息
-            t_ip1.start()
-            t_ip2.start()
-            t_ip1.join()   
-            t_ip2.join() 
-        elif opt in ('--subdomain'): # 搜索子域名信息
-            t_SubDomain.start()
-            t_SubDomain.join() 
-        elif opt in ('--whois'): # 搜索whois信息
-            t_whois1.start()
-            t_whois2.start()
-            t_whois1.join()
-        elif opt in ('--port'): # 搜索IP端口信息
-            if 'H1_dnsdumpster' in locals().keys(): #判断H1_dnsdumpster变量有没有被定义，也就是说判断查询IP的两个函数有没有被执行
-                port_main()
-            else: # 如果查询IP的两个函数没有被执行就先执行查询IP的函数再查询端口
+                    ''')
+
+            elif opt in ('-u','--url'): # 指定url
+                url = arg
+                deal_url(url)
+                if len(argv) == 2:#搜索所有信息
+                    for i in threading_list:
+                        i.start()
+                    for i in threading_list:
+                        i.join()
+                    port_main()
+            elif opt in ('--assert'): # 搜索资产信息
+                t_zhichan.start()
+                t_zhichan.join()
+            elif opt in ('--cms'): # 搜索CMS信息
+                t_cms1.start()
+                t_cms2.start()
+                t_cms1.join()
+                t_cms2.join()
+            elif opt in ('--dns'): # 搜索DNS信息
+                t_DNSinfo.start()
+                t_DNSinfo.join()
+            elif opt in ('--filing'): # 搜索备案信息
+                t_beian.start()
+                t_beian.join()
+            elif opt in ('--ip'): # 搜索IP信息
                 t_ip1.start()
                 t_ip2.start()
                 t_ip1.join()
                 t_ip2.join()
-                port_main()
+            elif opt in ('--subdomain'): # 搜索子域名信息
+                t_SubDomain.start()
+                t_SubDomain.join()
+            elif opt in ('--whois'): # 搜索whois信息
+                t_whois1.start()
+                t_whois2.start()
+                t_whois1.join()
+                t_whois2.join()
+            elif opt in ('--port'): # 搜索IP端口信息
+                if 'H1_dnsdumpster' in locals().keys(): #判断H1_dnsdumpster变量有没有被定义，也就是说判断查询IP的两个函数有没有被执行
+                    port_main()
+                else: # 如果查询IP的两个函数没有被执行就先执行查询IP的函数再查询端口
+                    t_ip1.start()
+                    t_ip2.start()
+                    t_ip1.join()
+                    t_ip2.join()
+                    port_main()
+    except Exception as e:
+        print ('[-] 发生异常:',e)
