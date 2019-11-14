@@ -125,7 +125,7 @@ def CMS2_bugscaner(complete_url):#CMS2_bugscaner
         request_bugscaner = requests.post("http://whatweb.bugscaner.com/api.go",files=data)
         print('[!] 来自bugscaner的提示，今日识别剩余次数：',request_bugscaner.headers["X-RateLimit-Remaining"])
         for i in request_bugscaner.json():
-            print('[+]    ',i,':',request_bugscaner.json()[i])
+            print('[+]',i,':',request_bugscaner.json()[i])
     except Exception as e:
         print ('[-] 发生异常:',e)
     lock.release()
@@ -157,24 +157,31 @@ def ip1_dnsdumpster(simple_url):
         print('\n[!] 正在使用dnsdumpster进行IP地址查询 ……')
         print('[!] 注意：如果目标使用了CDN，那么查询到的IP不可信')
         dnsdumpster(simple_url)
-        for j in range(3):
-            print('[+]',H2_1_dnsdumpster[j].text.split())
+        if H2_1_dnsdumpster == []:
+            print('[-] 查询结果为空')
+        else:
+            for j in range(3):
+                print('[+]', H2_1_dnsdumpster[j].text.split())
     except Exception as e:
         print ('[-] 发生异常:',e)
     lock.release()
 
-def ip2_aizhan(simple_url):
+def ip2_aizhan(medium_url):
     lock.acquire()
     try:
         print('\n[!] 正在使用爱站网进行IP地址查询 ……')
         print('[!] 注意：如果两次查询的IP不一致，那么查询到的IP不可信')
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'}
-        requests_aizhan = requests.get('https://dns.aizhan.com/{}/'.format(simple_url),headers = headers)
+        requests_aizhan = requests.get('https://dns.aizhan.com/{}/'.format(medium_url),headers = headers)
         bs_aizhan = BeautifulSoup(requests_aizhan.text,'html.parser')
-        global ip_bs_aizhan
-        ip_bs_aizhan = bs_aizhan.select('strong')
-        for i in range(3):
-            print('[+]',bs_aizhan.select('p')[i+1].text,':',ip_bs_aizhan[i].text)
+        judge_bs_aizhan = bs_aizhan.select('.red')[0].text
+        if judge_bs_aizhan != '解析域名失败!':
+            global ip_bs_aizhan
+            ip_bs_aizhan = bs_aizhan.select('strong')
+            for i in range(3):
+                print('[+]', bs_aizhan.select('p')[i + 1].text, ':', ip_bs_aizhan[i].text)
+        else:
+            print('[-]', judge_bs_aizhan)
     except Exception as e:
         print ('[-] 发生异常:',e)
     lock.release()
@@ -206,7 +213,7 @@ def tianyancha(url):
                     print('[+]',targetinfo_tianyancha[i-1].text,':',targetinfo_tianyancha[i].text)
             print('\n[+] 关于该URL的其他可能相关资产信息如下：')
             for i in list_tianyancha:
-                print('[+] ',i.a['href'])
+                print('[+]',i.a['href'])
         else:
             print('[-] 未查询到该URL的企业信息')
     except Exception as e:
@@ -219,7 +226,7 @@ def DNSinfo():
         print('\n[!] 正在使用dnsdumpster进行DNS信息查询 ……')
         dnsdumpster(simple_url)
         for i in range(3): #DNS信息查询
-            print('\n[+] ',H1_dnsdumpster[i+4].text)
+            print('\n[+]',H1_dnsdumpster[i+4].text)
             for j in H2_dnsdumpster[i].select('td'):
                 print('[+]     ',j.text.split())
     except Exception as e:
@@ -245,7 +252,7 @@ def port(ip,port):
         requests_port =  requests.get(url,headers = headers)
         if '打开' in requests_port.text:
             bs_port = BeautifulSoup(requests_port.text,'html.parser')
-            print('[+] ',port,' ',bs_port.text)
+            print('[+]',port,' ',bs_port.text)
     except Exception as e:
         print ('[-] 发生异常:',e)
     lock.release()
@@ -253,36 +260,50 @@ def port(ip,port):
 def port_main():
     try:
         print('\n[!] 正在使用tool.cc进行端口查询 ……')
-        if re.findall(r'(?<=>).*?(?=<br)',str(H2_1_dnsdumpster[1]))[0] == ip_bs_aizhan[1].text: #使用正则匹配结果，避免误报
-            ip = ip_bs_aizhan[1].text
-            print('[!] 正在对{}进行常用端口查询 ……'.format(ip))
-            port_list = [21,22,23,25,53,80,110,135,137,138,139,143,443,445,1433,1863,2289,3306,3389,5631,5632,5000,8080,9090]
-            thread_port = []
-            for i in port_list:
-                t_port = threading.Thread(target = port,args = (ip,i,),name = 'port{}'.format(i))
-                thread_port.append(t_port)
-            for i in thread_port:
-                i.start()
-            for i in thread_port:
-                i.join()
+        if H2_1_dnsdumpster == []:
+            print('[-] dnsdumpster的查询结果为空，无法判断IP真实性，停止被动端口扫描……')
         else:
-            print('[-] 发现两次IP查询的结果不一致，停止被动端口扫描……')
+            if re.findall(r'(?<=>).*?(?=<br)',str(H2_1_dnsdumpster[1]))[0] == ip_bs_aizhan[1].text: #使用正则匹配结果，避免误报
+                ip = ip_bs_aizhan[1].text
+                print('[!] 正在对{}进行常用端口查询 ……'.format(ip))
+                port_list = [21,22,23,25,53,80,110,135,137,138,139,143,443,445,1433,1863,2289,3306,3389,5631,5632,5000,8080,9090]
+                thread_port = []
+                for i in port_list:
+                    t_port = threading.Thread(target = port,args = (ip,i,),name = 'port{}'.format(i))
+                    thread_port.append(t_port)
+                for i in thread_port:
+                    i.start()
+                for i in thread_port:
+                    i.join()
+            else:
+                print('[-] 发现两次IP查询的结果不一致，停止被动端口扫描……')
     except Exception as e:
         print ('[-] 发生异常:',e)
         
 
 def deal_url(url):
     try:
-        global simple_url,complete_url,t_whois1, t_whois2, t_beian, t_cms1, t_cms2, t_ip1, t_ip2, t_DNSinfo, t_SubDomain, t_zhichan, threading_list
+        global simple_url,medium_url,complete_url,t_whois1, t_whois2, t_beian, t_cms1, t_cms2, t_ip1, t_ip2, t_DNSinfo, t_SubDomain, t_zhichan, threading_list
         if 'www' in url: # 将url格式处理成简单的url
             simple_url = '.'
             simple_url = simple_url.join(url.split('.')[1:])
-        elif '/' in url:
-            simple_url = url.split('/')[2]
+        elif '//' in url:
+            simple_url = url.split('//')[1]
         else:
             simple_url = url
 
-        if '/' not in url: # 将url格式处理成完整的url
+        if '//' not in url and 'www' not in url:  # 将url格式处理成没有http://的url
+            medium_url = 'www.' + url
+        elif '//' in url and 'www' not in url:
+            medium_url = 'www.' + url.split('//')[1]
+        elif '//' in url and 'www' in url:
+            medium_url = url.split('//')[1]
+        else:
+            medium_url = url
+
+        if '//' not in url and 'www' not in url:  # 将url格式处理成完整的url
+            complete_url = 'http://www.' + url
+        elif '//' not in url:  # 将url格式处理成完整的url
             complete_url = 'http://' + url
         else:
             complete_url = url
@@ -293,7 +314,7 @@ def deal_url(url):
         t_cms1 = threading.Thread(target = CMS1_yunsee,args = (complete_url,),name = 'cms1')#CMS1_云悉
         t_cms2 = threading.Thread(target = CMS2_bugscaner,args = (complete_url,),name = 'cms2')#CMS2_bugscaner
         t_ip1 = threading.Thread(target = ip1_dnsdumpster,args = (simple_url,),name = 'ip1')#ip1_dnsdumpsterc
-        t_ip2 = threading.Thread(target = ip2_aizhan,args = (simple_url,),name = 'ip2')#ip1_爱站网
+        t_ip2 = threading.Thread(target = ip2_aizhan,args = (medium_url,),name = 'ip2')#ip1_爱站网
         t_DNSinfo = threading.Thread(target = DNSinfo,name = 'DNSinfo')#DNS信息
         t_SubDomain = threading.Thread(target = SubDomain,name = 'SubDomain')#子域名
         t_zhichan = threading.Thread(target = tianyancha,args = (url,),name = 'tianyancha')#天眼查
