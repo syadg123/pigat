@@ -238,8 +238,11 @@ def SubDomain():
     try:
         print('\n[!] 正在使用dnsdumpster进行子域名查询 ……')
         dnsdumpster(simple_url)
-        for j in range(3,len(H2_1_dnsdumpster)):
-            print('[+]',H2_1_dnsdumpster[j].text.split())
+        for i in range(3, len(H2_1_dnsdumpster),3):
+            temp_subdomain = H2_1_dnsdumpster[i].text.split()
+            print('[+] ', temp_subdomain[0])
+            for j in range(1, len(temp_subdomain), 1):
+                print('[+] \t',temp_subdomain[j].replace(':', ''))
     except Exception as e:
         print ('[-] 发生异常:',e)
     lock.release()
