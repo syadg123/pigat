@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 def Whois1_internic(simple_url):#利用internic进行Whois查询
     lock.acquire()
     try:
-        print('\n[!] 正在使用internic进行Whois信息查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用internic进行Whois信息查询 ……\033[0m')
         headers = {
         'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
         'Referer':'https://www.internic.net/'
@@ -20,40 +20,40 @@ def Whois1_internic(simple_url):#利用internic进行Whois查询
         bs4_requests_internic = BeautifulSoup(requests_internic.text,'html.parser')
         result_internic = bs4_requests_internic.select('pre')[0].text.split('>>>')[0].split('\n')
         if 'No match for domain' in result_internic[1]:
-            print('[-]', result_internic[1])
+            print('\033[1;31;40m[-] {}\033[0m'.fotmat(result_internic[1]))
         else:
             for i in result_internic:
                 if i not in '':
-                    print('[+]    ', i.split('   ')[1])
+                    print('\033[1;32;40m[+] {}\033[0m'.format(i.split('   ')[1]))
     except Exception as e:
-        print('[-] 发生异常:',e)
+        print('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
     
     
 def Whois2_chinaz(simple_url):#利用站长之家进行Whois查询
     lock.acquire()
     try:
-        print('\n[!] 正在使用站长之家进行Whois信息查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用站长之家进行Whois信息查询 ……\033[0m')
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36'}
         requests_chinaz = requests.get('https://whois.chinaz.com/{}'.format(simple_url),headers=headers)
         bs4_requests_chinaz = BeautifulSoup(requests_chinaz.text,'html.parser')
         check_chinaz = bs4_requests_chinaz.select('.fz18')[0].text
         if check_chinaz == '该域名被屏蔽':
-            print('[-] 该域名已被站长之家屏蔽')
+            print('\033[1;31;40m[-] 该域名已被站长之家屏蔽\033[0m')
         else:
             bs4_Whois_info_chinaz = bs4_requests_chinaz.select('#sh_info')[0].select('.bor-b1s')
             for i in bs4_Whois_info_chinaz:
                 if '域名' not in i.text and '站长之家' not in i.text:
-                    print('[+]    ', i.text.replace('[whois反查]', ''))
+                    print('\033[1;32;40m[+] {}\033[0m'.format(i.text.replace('[whois反查]', '')))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:\033[0m'.format(e))
     lock.release()
        
         
 def beian(url):
     lock.acquire()
     try:
-        print('\n[!] 正在使用站长之家进行域名备案信息查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用站长之家进行域名备案信息查询 ……\033[0m')
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36'}
         requests_beian = requests.get('https://icp.chinaz.com/info?q={}'.format(url),headers = headers)
         bs_beian = BeautifulSoup(requests_beian.text,'html.parser')
@@ -61,27 +61,27 @@ def beian(url):
         H2_beian = bs_beian.select('.Imgicp-right')[0].select('.bx')
         H3_1_beian = bs_beian.select('.Imgicp-right')[0].select('.by1')
         H3_2_beian = bs_beian.select('.Imgicp-right')[0].select('.by2')
-        print('[+] ',H1_beian[0].text,':')
-        print('[+]     ',H2_beian[0].text,H3_1_beian[0].text)
-        print('[+]     ',H2_beian[1].text,H3_2_beian[0].text)
-        print('[+]     ',H2_beian[2].text,H3_1_beian[1].text)
-        print('[+]     ',H2_beian[3].text,H3_2_beian[1].text)
-        print('[+] ',H1_beian[1].text,':')
-        print('[+]     ',H2_beian[4].text,H3_1_beian[2].text)
-        print('[+]     ',H2_beian[5].text,H3_2_beian[2].text)
-        print('[+]     ',H2_beian[6].text,H3_1_beian[3].text)
-        print('[+]     ',H2_beian[7].text,H3_1_beian[4].text.split()[0])
-        print('[+]     ',H2_beian[8].text,H3_1_beian[5].text)
-        print('[+]     ',H2_beian[9].text,H3_1_beian[6].text.split()[0])
+        print('\033[1;32;40m[+] {}\033[0m'.format(H1_beian[0].text,':'))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[0].text,H3_1_beian[0].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[1].text,H3_2_beian[0].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[2].text,H3_1_beian[1].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[3].text,H3_2_beian[1].text))
+        print('\033[1;32;40m[+] {}\033[0m'.format(H1_beian[1].text,':'))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[4].text,H3_1_beian[2].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[5].text,H3_2_beian[2].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[6].text,H3_1_beian[3].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[7].text,H3_1_beian[4].text.split()[0]))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[8].text,H3_1_beian[5].text))
+        print('\033[1;32;40m[+]    {}\033[0m'.format(H2_beian[9].text,H3_1_beian[6].text.split()[0]))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
     
     
 def CMS1_yunsee(complete_url):#CMS1_云悉
     lock.acquire()
     try:
-        print('\n[!] 正在使用云悉进行CMS指纹信息识别 ……')
+        print('\n\033[1;33;40m[!] 正在使用云悉进行CMS指纹信息识别 ……\033[0m')
         headers = {
             'Accept': '*/*',
             'Origin': 'http://www.yunsee.cn',
@@ -101,20 +101,20 @@ def CMS1_yunsee(complete_url):#CMS1_云悉
         if 'success' == response_yunsee_text['mess']:
             for i in print_yunsee['fingers']:
                 if i not in 'id':
-                    print('[+]',i)
+                    print('\033[1;32;40m[+] {}\033[0m'.format(i))
                     for j in print_yunsee['fingers'][i]:
-                        print('[+]    ',j)
+                        print('\033[1;32;40m[+]    {}\033[0m'.format(j))
         else:
-            print('[-] 来自云悉的提示:',response_yunsee_text['mess'],'请过会儿后重试')
+            print('\033[1;31;40m[-] 来自云悉的提示:{} 请过会儿后重试\033[0m'.format(response_yunsee_text['mess']))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 
 def CMS2_bugscaner(complete_url):#CMS2_bugscaner
     lock.acquire()
     try:
-        print('\n[!] 正在使用bugscaner进行CMS指纹信息识别 ……')
+        print('\n\033[1;33;40m[!] 正在使用bugscaner进行CMS指纹信息识别 ……\033[0m')
         response_bugscaner = requests.get(complete_url)
         whatweb_dict = {"url":response_bugscaner.url,"text":response_bugscaner.text,"headers":dict(response_bugscaner.headers)}
         whatweb_dict = json.dumps(whatweb_dict)
@@ -123,11 +123,11 @@ def CMS2_bugscaner(complete_url):#CMS2_bugscaner
         data = {"info":whatweb_dict}
 
         request_bugscaner = requests.post("http://whatweb.bugscaner.com/api.go",files=data)
-        print('[!] 来自bugscaner的提示，今日识别剩余次数：',request_bugscaner.headers["X-RateLimit-Remaining"])
+        print('\033[1;33;40m[!] 来自bugscaner的提示，今日识别剩余次数：{}\033[0m '.format(request_bugscaner.headers["X-RateLimit-Remaining"]))
         for i in request_bugscaner.json():
-            print('[+]',i,':',request_bugscaner.json()[i])
+            print('\033[1;32;40m[+] {}:{}\033[0m'.format(i,request_bugscaner.json()[i]))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 
@@ -148,29 +148,29 @@ def dnsdumpster(simple_url):
         H2_dnsdumpster = bs_requests_dnsdumpster.select('.table-responsive')
         H2_1_dnsdumpster = H2_dnsdumpster[3].select('td')
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
         
 
 def ip1_dnsdumpster(simple_url):
     lock.acquire()
     try:
-        print('\n[!] 正在使用dnsdumpster进行IP地址查询 ……')
-        print('[!] 注意：如果目标使用了CDN，那么查询到的IP不可信')
+        print('\n\033[1;33;40m[!] 正在使用dnsdumpster进行IP地址查询 ……\033[0m ')
+        print('\033[1;33;40m[!] 注意：如果目标使用了CDN，那么查询到的IP不可信\033[0m ')
         dnsdumpster(simple_url)
         if H2_1_dnsdumpster == []:
-            print('[-] 查询结果为空')
+            print('\033[1;31;40m[-] 查询结果为空\033[0m ')
         else:
             for j in range(3):
-                print('[+]', H2_1_dnsdumpster[j].text.split())
+                print('\033[1;32;40m[+] {}\033[0m'.format(H2_1_dnsdumpster[j].text.split()))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 def ip2_aizhan(medium_url):
     lock.acquire()
     try:
-        print('\n[!] 正在使用爱站网进行IP地址查询 ……')
-        print('[!] 注意：如果两次查询的IP不一致，那么查询到的IP不可信')
+        print('\n\033[1;33;40m[!] 正在使用爱站网进行IP地址查询 ……\033[0m ')
+        print('\033[1;33;40m[!] 注意：如果两次查询的IP不一致，那么查询到的IP不可信\033[0m ')
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'}
         requests_aizhan = requests.get('https://dns.aizhan.com/{}/'.format(medium_url),headers = headers)
         bs_aizhan = BeautifulSoup(requests_aizhan.text,'html.parser')
@@ -179,25 +179,25 @@ def ip2_aizhan(medium_url):
             global ip_bs_aizhan
             ip_bs_aizhan = bs_aizhan.select('strong')
             for i in range(3):
-                print('[+]', bs_aizhan.select('p')[i + 1].text, ':', ip_bs_aizhan[i].text)
+                print('\033[1;32;40m[+] {}:{}\033[0m'.format(bs_aizhan.select('p')[i + 1].text,ip_bs_aizhan[i].text))
         else:
-            print('[-]', judge_bs_aizhan)
+            print('\033[1;31;40m[-] {}\033[0m'.format(judge_bs_aizhan))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
         
     
 def tianyancha(url):
     lock.acquire()
     try:
-        print('\n[!] 正在使用天眼查进行资产查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用天眼查进行资产查询 ……\033[0m ')
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0',
                     'Referer':'https://www.tianyancha.com/search?key={}'.format(url)}
         requests_tianyancha = requests.get('https://www.tianyancha.com/search?key={}'.format(url),headers = headers)
         bs_requests_tianyancha = BeautifulSoup(requests_tianyancha.text,'html.parser')
         list_tianyancha = bs_requests_tianyancha.select('.search-result-single')#获取主页查询结果
         if list_tianyancha != []:
-            print('[!] 注意：因为天眼查存在反爬机制，因此回显结果可能存在问题')
+            print('\033[1;33;40m[!] 注意：因为天眼查存在反爬机制，因此回显结果可能存在问题\033[0m ')
             sub_url = list_tianyancha[0].a['href']#获取列表中的第一个结果
             sub_requests_tianyancha = requests.get(sub_url,headers = headers)
             sub_bs_requests_tianyancha = BeautifulSoup(sub_requests_tianyancha.text,'html.parser')
@@ -205,46 +205,46 @@ def tianyancha(url):
             targeturl_tianyancha = sub_bs_requests_tianyancha.select('.in-block.sup-ie-company-header-child-1')[1].text#获取目标公司的URL
             targetinfo_tianyancha = sub_bs_requests_tianyancha.select('.table.-striped-col.-border-top-none.-breakall')[0].select('td')
             print('\n[+] 公司名称：',targetname_tianyancha)
-            print('[+]',targeturl_tianyancha)
+            print('\033[1;32;40m[+] {}\033[0m'.format(targeturl_tianyancha))
             for i in range(0,40,2):
                 if i < 4:
-                    print('[+]',targetinfo_tianyancha[i].text,':',targetinfo_tianyancha[i+1].text)
+                    print('\033[1;32;40m[+] {}:{}\033[0m'.format(targetinfo_tianyancha[i].text,targetinfo_tianyancha[i+1].text))
                 if i > 4:
-                    print('[+]',targetinfo_tianyancha[i-1].text,':',targetinfo_tianyancha[i].text)
-            print('\n[+] 关于该URL的其他可能相关资产信息如下：')
+                    print('\033[1;32;40m[+] {}:{}\033[0m'.format(targetinfo_tianyancha[i-1].text,targetinfo_tianyancha[i].text))
+            print('\n\033[1;32;40m[+] 关于该URL的其他可能相关资产信息如下：\033[0m')
             for i in list_tianyancha:
-                print('[+]',i.a['href'])
+                print('\033[1;32;40m[+] {}\033[0m'.format(i.a['href']))
         else:
-            print('[-] 未查询到该URL的企业信息')
+            print('\033[1;31;40m[-] 未查询到该URL的企业信息\033[0m ')
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 def DNSinfo():
     lock.acquire()
     try:
-        print('\n[!] 正在使用dnsdumpster进行DNS信息查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用dnsdumpster进行DNS信息查询 ……\033[0m ')
         dnsdumpster(simple_url)
         for i in range(3): #DNS信息查询
-            print('\n[+]',H1_dnsdumpster[i+4].text)
+            print('\n\033[1;32;40m[+]{}\033[0m'.format(H1_dnsdumpster[i+4].text))
             for j in H2_dnsdumpster[i].select('td'):
-                print('[+]     ',j.text.split())
+                print('\033[1;32;40m[+]     {}\033[0m'.format(j.text.split()))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 def SubDomain():
     lock.acquire()
     try:
-        print('\n[!] 正在使用dnsdumpster进行子域名查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用dnsdumpster进行子域名查询 ……\033[0m ')
         dnsdumpster(simple_url)
         for i in range(3, len(H2_1_dnsdumpster),3):
             temp_subdomain = H2_1_dnsdumpster[i].text.split()
-            print('[+] ', temp_subdomain[0])
+            print('\033[1;32;40m[+] {}\033[0m'.format(temp_subdomain[0]))
             for j in range(1, len(temp_subdomain), 1):
-                print('[+] \t',temp_subdomain[j].replace(':', ''))
+                print('\033[1;32;40m[+]     {}\t\033[0m'.format(temp_subdomain[j].replace(':', '')))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 def port(ip,port):
@@ -255,20 +255,20 @@ def port(ip,port):
         requests_port =  requests.get(url,headers = headers)
         if '打开' in requests_port.text:
             bs_port = BeautifulSoup(requests_port.text,'html.parser')
-            print('[+]',port,' ',bs_port.text)
+            print('\033[1;32;40m[+] {}  {}\033[0m'.format(port,bs_port.text))
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
     lock.release()
 
 def port_main():
     try:
-        print('\n[!] 正在使用tool.cc进行端口查询 ……')
+        print('\n\033[1;33;40m[!] 正在使用tool.cc进行端口查询 ……\033[0m ')
         if H2_1_dnsdumpster == []:
-            print('[-] dnsdumpster的查询结果为空，无法判断IP真实性，停止被动端口扫描……')
+            print('\033[1;31;40m[-] dnsdumpster的查询结果为空，无法判断IP真实性，停止被动端口扫描……\033[0m ')
         else:
             if re.findall(r'(?<=>).*?(?=<br)',str(H2_1_dnsdumpster[1]))[0] == ip_bs_aizhan[1].text: #使用正则匹配结果，避免误报
                 ip = ip_bs_aizhan[1].text
-                print('[!] 正在对{}进行常用端口查询 ……'.format(ip))
+                print('\033[1;33;40m[!] 正在对{}进行常用端口查询 ……\033[0m '.format(ip))
                 port_list = [21,22,23,25,53,80,110,135,137,138,139,143,443,445,1433,1863,2289,3306,3389,5631,5632,5000,8080,9090]
                 thread_port = []
                 for i in port_list:
@@ -279,9 +279,9 @@ def port_main():
                 for i in thread_port:
                     i.join()
             else:
-                print('[-] 发现两次IP查询的结果不一致，停止被动端口扫描……')
+                print('\033[1;31;40m[-] 发现两次IP查询的结果不一致，停止被动端口扫描……\033[0m ')
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
         
 
 def deal_url(url):
@@ -326,7 +326,7 @@ def deal_url(url):
         for i in threading_list:
             i.setDaemon(True)
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
   
                
 if __name__ == '__main__':
@@ -351,13 +351,13 @@ if __name__ == '__main__':
         lock = threading.Lock()
         argv = sys.argv[1:]
         if argv == []:
-            print('\n[-] 请参考上面的示例格式输入正确内容，或者查看帮助\n')
+            print('\n\033[1;31;40m[-] 请参考上面的示例格式输入正确内容，或者查看帮助\033[0m \n')
             
         opts,args = getopt.getopt(argv,'hu:',['help','url=','whois','filing','cms','ip','dns','subdomain','assert','port'])
         
     except getopt.GetoptError:
         print('''
-[-] 请参考帮助信息输入正确格式内容
+\033[1;31;40m[-] 请参考帮助信息输入正确格式内容
 
     帮助：
         --assert : 搜集目标资产信息
@@ -374,7 +374,7 @@ if __name__ == '__main__':
     示例：
         python pigat.py -h：查看帮助信息
         python pigat.py -u teamssix.com ：查看teamssix.com的所有信息
-        python pigat.py -u teamssix.com --assert：查看teamssix.com的相关资产信息
+        python pigat.py -u teamssix.com --assert：查看teamssix.com的相关资产信息\033[0m 
         ''')
         sys.exit()
     try:
@@ -445,4 +445,4 @@ if __name__ == '__main__':
                     t_ip2.join()
                     port_main()
     except Exception as e:
-        print ('[-] 发生异常:',e)
+        print ('\033[1;31;40m[-] 发生异常:{}\033[0m '.format(e))
