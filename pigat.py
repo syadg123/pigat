@@ -332,7 +332,7 @@ def deal_url(url):
 if __name__ == '__main__':
     try:
         print(
-'''
+'''\033[1;33;40m
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                       *
  *               【被动信息收集聚合工具】                *
@@ -346,7 +346,7 @@ if __name__ == '__main__':
  *                  博客：teamssix.com                   *
  *                                                       *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-'''
+\033[0m'''
 )
         lock = threading.Lock()
         argv = sys.argv[1:]
@@ -380,7 +380,7 @@ if __name__ == '__main__':
     try:
         for opt,arg in opts:
             if opt in ('-h','--help'):
-                print('''
+                print('''\033[1;33;40m
 帮助：
     --assert : 搜集目标资产信息
     --cms : 搜集目标CMS信息
@@ -397,7 +397,7 @@ if __name__ == '__main__':
     python pigat.py -h：查看帮助信息
     python pigat.py -u teamssix.com ：查看teamssix.com的所有信息
     python pigat.py -u teamssix.com --assert：查看teamssix.com的相关资产信息
-                    ''')
+                    \033[0m''')
 
             elif opt in ('-u','--url'): # 指定url
                 url = arg
