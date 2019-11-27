@@ -30,6 +30,7 @@ Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被�
 # python pigat.py -u teamssix.com --ip --cms
 ```
 ![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/pigat5.png)
+
 ### 写在最后
 因为我没有太多的开发经验，因此该工具难免存在有问题以及不恰当的地方，希望各位大佬在使用的过程中碰到问题能够多多反馈。
 
