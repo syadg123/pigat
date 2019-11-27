@@ -11,34 +11,25 @@ Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被�
 [点击进入下载页面](https://github.com/teamssix/pigat/releases)
 ### 示例：
 1.查看帮助信息
-
 ```
 # python pigat.py -h
-
-帮助：
-    --assert : 搜集目标资产信息
-    --cms : 搜集目标CMS信息
-    --dns : 搜集目标DNS信息
-    --filing : 搜集目标备案信息
-    -h | --help ：查看帮助信息
-    --ip : 搜集目标IP信息
-    --port : 如果两次查询IP结果一致，则扫描该IP端口
-    --subdomain : 搜集目标子域名信息
-    -u | --url : 指定目标URL，默认收集所有信息
-    --whois : 搜集目标Whois信息
 ```
+![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/pigat1.png)
 2.指定url进行信息获取
 ```
 # python pigat.py -u teamssix.com
 ```
+![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/pigat2.png)
 3.指定url进行单项信息获取
 ```
 # python pigat.py -u teamssix.com --cms
 ```
+![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2019-11-27_14-50-01.png)
 4.指定url进行多项信息获取
 ```
 # python pigat.py -u teamssix.com --ip --cms
 ```
+![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/pigat5.png)
 ### 写在最后
 因为我没有太多的开发经验，因此该工具难免存在有问题以及不恰当的地方，希望各位大佬在使用的过程中碰到问题能够多多反馈。
 
