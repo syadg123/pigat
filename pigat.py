@@ -6,7 +6,9 @@ import getopt
 import requests
 import traceback
 import threading
+import pandas as pd
 from bs4 import BeautifulSoup
+from texttable import Texttable
 
 def Whois1_internic(simple_url):#利用internic进行Whois查询
     lock.acquire()
@@ -93,17 +95,13 @@ def CMS1_yunsee(complete_url):#CMS1_云悉
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'Connection': 'close'
         }
-        data = {'type':'webinfo','url':complete_url}
-        response_yunsee = requests.post('http://www.yunsee.cn/home/getInfo',headers=headers,data=data)
+        data = {'type': 'webcms', 'url': complete_url}
+        response_yunsee = requests.post('http://www.yunsee.cn/home/getInfo', headers=headers, data=data)
         response_yunsee_text = json.loads(response_yunsee.text)
-        global print_yunsee
-        print_yunsee = response_yunsee_text['res']
-        if 'success' == response_yunsee_text['mess']:
-            for i in print_yunsee['fingers']:
-                if i not in 'id':
-                    print('\033[1;32;40m[+] {}\033[0m'.format(i))
-                    for j in print_yunsee['fingers'][i]:
-                        print('\033[1;32;40m[+]    {}\033[0m'.format(j))
+        if response_yunsee_text['code'] == 1:
+            print_yunsee = response_yunsee_text['res']
+            for i in print_yunsee:
+                print('\033[1;32;40m[+] {} ({})\033[0m'.format(i['name'], i['desc']))
         else:
             print('\033[1;31;40m[-] 来自云悉的提示:{} 请过会儿后重试\033[0m'.format(response_yunsee_text['mess']))
     except Exception as e:
@@ -204,7 +202,7 @@ def tianyancha(url):
             targetname_tianyancha = sub_bs_requests_tianyancha.select('.name')[0].text
             targeturl_tianyancha = sub_bs_requests_tianyancha.select('.in-block.sup-ie-company-header-child-1')[1].text#获取目标公司的URL
             targetinfo_tianyancha = sub_bs_requests_tianyancha.select('.table.-striped-col.-border-top-none.-breakall')[0].select('td')
-            print('\n[+] 公司名称：',targetname_tianyancha)
+            print('\033[1;32;40m[+] 公司名称：{}\033[0m'.format(targetname_tianyancha))
             print('\033[1;32;40m[+] {}\033[0m'.format(targeturl_tianyancha))
             for i in range(0,40,2):
                 if i < 4:
