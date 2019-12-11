@@ -1,5 +1,4 @@
 # Pigat：一款被动信息收集聚合工具
-## 拒绝白嫖，从我做起，求个star★呀(～￣▽￣)～
 ### 前言
 Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被动信息收集聚合工具，既然叫聚合工具，也就是说该工具将多款被动信息收集工具结合在了一起，进而提高了平时信息收集的效率。
 ### 功能概述
