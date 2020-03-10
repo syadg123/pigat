@@ -35,6 +35,6 @@ Pigat即Passive Intelligence Gathering Aggregation Tool，翻译过来就是被�
 
 开发不易，还望大佬们走过路过顺手给个star，小弟将不胜感激。
 
-PS：该工具将会持续更新
+PS：近期该工具将迎来重大升级！  -- 2020.3.10
 
 ![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/TeamsSix_Subscription_Logo2.png)
