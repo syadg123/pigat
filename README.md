@@ -37,7 +37,7 @@ MONGO_DB_URI = 'mongodb://localhost:27017'
 ### 2、安装第三方模块文件
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### 3、开始运行
