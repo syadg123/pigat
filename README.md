@@ -55,7 +55,7 @@ python3 start.py -u target.com
 -h : 查看帮助
 ```
 
-## :mag: 示例：
+## :mag: 示例
 
 ### python3 start.py -u teamssix.com
 
