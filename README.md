@@ -158,13 +158,13 @@ com', 'fit.freebuf.com', 'my.freebuf.com', 'shop.freebuf.com', 'api.freebuf.com'
 
 ## :clapper: 运行截图
 
-![](/Run_screenshot/Snipaste_2020-03-21_14-29-32.png)
+![](./Run_screenshot/Snipaste_2020-03-21_14-29-32.png)
 
-![](/Run_screenshot/Snipaste_2020-03-21_14-30-07.png)
+![](./Run_screenshot/Snipaste_2020-03-21_14-30-07.png)
 
-![](/Run_screenshot/Snipaste_2020-03-21_14-30-21.png)
+![](./Run_screenshot/Snipaste_2020-03-21_14-30-21.png)
 
-![](/Run_screenshot/Snipaste_2020-03-21_14-30-33.png)
+![](./Run_screenshot/Snipaste_2020-03-21_14-30-33.png)
 
 ## :link: 下载地址
 
