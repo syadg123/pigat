@@ -11,11 +11,15 @@ Pigat（Passive Intelligence Gathering Aggregation Tool）被动信息收集聚�
 ## :clipboard: 功能描述
 
 :ballot_box_with_check: 被动收集备案信息
+
 :ballot_box_with_check: 被动收集 Whois 信息
+
 :ballot_box_with_check: 被动收集子域名信息
 :ballot_box_with_check: 被动收集子域名 IP 信息
+
 :ballot_box_with_check: 被动收集子域名 CMS 信息
 :ballot_box_with_check: 被动收集子域名 Shodan 信息
+
 :ballot_box_with_check: 被动收集子域名漏洞信息
 
 ## :bulb: 使用方法
@@ -49,7 +53,7 @@ python3 start.py -u target.com
 -h : 查看帮助
 ```
 
-## :mag: ​示例：
+## :mag: 示例：
 
 ### python3 start.py -u teamssix.com
 
@@ -150,7 +154,7 @@ com', 'fit.freebuf.com', 'my.freebuf.com', 'shop.freebuf.com', 'api.freebuf.com'
 ……此处内容太多，省略……
 ```
 
-## :clapper: ​运行截图
+## :clapper: 运行截图
 
 ![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-29-32.png)
 
@@ -160,12 +164,11 @@ com', 'fit.freebuf.com', 'my.freebuf.com', 'shop.freebuf.com', 'api.freebuf.com'
 
 ![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-30-33.png)
 
-## :link: ​下载地址
+## :link: 下载地址
 
 [点击进入下载页面](https://github.com/teamssix/pigat/releases)
 
 ## :end: 写在最后
-
 因为我没有太多的开发经验，因此该工具难免存在有问题以及不恰当的地方，希望各位大佬在使用的过程中碰到问题能够多多反馈。
 
 :star:开发不易，还望大佬们走过路过顺手给个star，小弟将不胜感激。
