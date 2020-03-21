@@ -15,9 +15,11 @@ Pigat（Passive Intelligence Gathering Aggregation Tool）被动信息收集聚�
 :ballot_box_with_check: 被动收集 Whois 信息
 
 :ballot_box_with_check: 被动收集子域名信息
+
 :ballot_box_with_check: 被动收集子域名 IP 信息
 
 :ballot_box_with_check: 被动收集子域名 CMS 信息
+
 :ballot_box_with_check: 被动收集子域名 Shodan 信息
 
 :ballot_box_with_check: 被动收集子域名漏洞信息
@@ -156,13 +158,13 @@ com', 'fit.freebuf.com', 'my.freebuf.com', 'shop.freebuf.com', 'api.freebuf.com'
 
 ## :clapper: 运行截图
 
-![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-29-32.png)
+![](/Run_screenshot/Snipaste_2020-03-21_14-29-32.png)
 
-![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-30-07.png)
+![](/Run_screenshot/Snipaste_2020-03-21_14-30-07.png)
 
-![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-30-21.png)
+![](/Run_screenshot/Snipaste_2020-03-21_14-30-21.png)
 
-![](https://teamssix.oss-cn-hangzhou.aliyuncs.com/Snipaste_2020-03-21_14-30-33.png)
+![](/Run_screenshot/Snipaste_2020-03-21_14-30-33.png)
 
 ## :link: 下载地址
 
